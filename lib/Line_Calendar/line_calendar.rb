@@ -1,11 +1,15 @@
 class Line_Calendar < Geeklet
+  registerConfiguration :Line_Calendar, :color, :default => "green", :description => "color of current date identifier", :type => :string
+  registerConfiguration :Line_Calendar, :hicolor, :default => "no", :description => "use the bright value of color option", :type => :string
 
-  COLOR = "\e[32m"
-  COLOR_STRING = "=="
+
+  COLOR_STRING = "◆◆"
   SEPARATOR_STRING_A = "  "
-  SEPARATOR_STRING_B = "=="
+  SEPARATOR_STRING_B = "··"
   END_COLOR = "\e[0m"
+  HI_COLOR = "\e[1m"
   ABBR_DAYNAMES = {0, 'Su', 1, 'Mo', 2, 'Tu', 3, 'We', 4, 'Th', 5, 'Fr', 6, 'Sa'}
+  COLORS = {'black', "\e[30m", 'red', "\e[31m", 'green', "\e[32m", 'yellow', "\e[33m", 'blue', "\e[34m", 'magenta', "\e[35m", 'cyan', "\e[36m", 'white', "\e[37m"}
 
   def name
     "Line Calendar"
@@ -36,7 +40,8 @@ class Line_Calendar < Geeklet
     separator = Array.new
     for d in (1..self.days_in_month(year, month))
       if year == Time.now.year && month == Time.now.month && d == Time.now.day then
-        separator[d] = Line_Calendar::COLOR + Line_Calendar::COLOR_STRING + Line_Calendar::END_COLOR
+        configurableValue(:Line_Calendar, :hicolor) == "yes" ? separator[d] = HI_COLOR : separator[d] = ""
+        separator[d] += Line_Calendar::COLORS[configurableValue(:Line_Calendar, :color)] + Line_Calendar::COLOR_STRING + Line_Calendar::END_COLOR
       else
         separator[d] = Line_Calendar::SEPARATOR_STRING_B
       end
