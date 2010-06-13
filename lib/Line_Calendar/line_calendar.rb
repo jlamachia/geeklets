@@ -6,6 +6,7 @@ class Line_Calendar < Geeklet
   COLOR_STRING = "◆◆"
   SEPARATOR_STRING_A = "  "
   SEPARATOR_STRING_B = "··"
+  SEPARATOR_STRING_C = "··"
   END_COLOR = "\e[0m"
   HI_COLOR = "\e[1m"
   ABBR_DAYNAMES = {0, 'Su', 1, 'Mo', 2, 'Tu', 3, 'We', 4, 'Th', 5, 'Fr', 6, 'Sa'}
@@ -47,7 +48,7 @@ class Line_Calendar < Geeklet
       end
     end
     separator.shift
-    return separator * Line_Calendar::SEPARATOR_STRING_B
+    return separator * Line_Calendar::SEPARATOR_STRING_C
   end
   
   def build_date_array(year, month)
