@@ -1,7 +1,7 @@
 class Line_Calendar < Geeklet
   registerConfiguration :Line_Calendar, :color, :default => "green", :description => "color of current date identifier", :type => :string
   registerConfiguration :Line_Calendar, :hicolor, :default => "no", :description => "use the bright value of color option", :type => :string
-
+  registerConfiguration :Line_Calendar, :vertical, :default => "no", :description => "build the calendar vertically", :type => :string
 
   COLOR_STRING = "◆◆"
   SEPARATOR_STRING_A = "  "
@@ -34,7 +34,7 @@ class Line_Calendar < Geeklet
       day_array[d] = Line_Calendar::ABBR_DAYNAMES[self.day_in_month(year, month, d)]
     end
     day_array.shift
-    return day_array * Line_Calendar::SEPARATOR_STRING_A
+    return day_array
   end
   
   def build_separator(year, month)
@@ -48,7 +48,7 @@ class Line_Calendar < Geeklet
       end
     end
     separator.shift
-    return separator * Line_Calendar::SEPARATOR_STRING_C
+    return separator
   end
   
   def build_date_array(year, month)
@@ -62,7 +62,16 @@ class Line_Calendar < Geeklet
         date_array[(d -1)] = "0#{d}"
       end
     end
-    return date_array * Line_Calendar::SEPARATOR_STRING_A
+    return date_array
+  end
+
+  def build_vertical_array(year, month)
+    dates = self.build_date_array(Time.now.year, Time.now.month)
+    days = self.build_day_array(Time.now.year, Time.now.month)
+    
+    vertical = days.zip(dates)
+    
+    return vertical
   end
 
   def run(params)
@@ -70,9 +79,22 @@ class Line_Calendar < Geeklet
     year = Time.now.year
     month = Time.now.month
     
-    puts self.build_day_array(year, month)
-    puts self.build_separator(year, month)
-    puts self.build_date_array(year, month)
+    if configurableValue(:Line_Calendar, :vertical) == "yes" then
+      varray = self.build_vertical_array(year, month)
+      varray.each do |d|
+        if year == Time.now.year && month == Time.now.month && d[1].to_i == Time.now.day then
+          configurableValue(:Line_Calendar, :hicolor) == "yes" ? temp_separator = HI_COLOR : temp_separator = ""
+          temp_separator += Line_Calendar::COLORS[configurableValue(:Line_Calendar, :color)] + Line_Calendar::COLOR_STRING + Line_Calendar::END_COLOR
+        else
+          temp_separator = Line_Calendar::SEPARATOR_STRING_C
+        end
+        puts d[0].to_s + " " + temp_separator + " " + d[1].to_s
+      end
+    else
+      puts self.build_day_array(year, month) * Line_Calendar::SEPARATOR_STRING_A
+      puts self.build_separator(year, month) * Line_Calendar::SEPARATOR_STRING_C
+      puts self.build_date_array(year, month) * Line_Calendar::SEPARATOR_STRING_A
+    end
   end
 
 end
