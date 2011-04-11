@@ -1,5 +1,5 @@
 class Line_Calendar < Geeklet
-  # register command line arguments with mechanize
+  # register command line arguments with configurableValue
   registerConfiguration :Line_Calendar, :color, :default => "green", :description => "color of current date identifier", :type => :string
   registerConfiguration :Line_Calendar, :hicolor, :default => "no", :description => "use the bright value of color option", :type => :string
   registerConfiguration :Line_Calendar, :vertical, :default => "no", :description => "build the calendar vertically", :type => :string
