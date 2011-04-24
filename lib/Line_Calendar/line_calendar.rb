@@ -3,6 +3,7 @@ class Line_Calendar < Geeklet
   registerConfiguration :Line_Calendar, :color, :default => "green", :description => "color of current date identifier", :type => :string
   registerConfiguration :Line_Calendar, :hicolor, :default => "no", :description => "use the bright value of color option", :type => :string
   registerConfiguration :Line_Calendar, :vertical, :default => "no", :description => "build the calendar vertically", :type => :string
+  registerConfiguration :Line_Calendar, :colordate, :default => "no", :description => "color the date string as well as the seperator", :type => :string
 
   # set up some constants for use in throughout the script
   COLOR_STRING = "◆◆" # the string used to denote the current day
@@ -73,16 +74,21 @@ class Line_Calendar < Geeklet
     date_array = Array.new
     # cycle through days in month creating one key in the array for each day
     for d in (1..self.days_in_month(year, month))
-      date_array[d] = d
+      if d < 10 then
+        # if date is 1-9 make sure it is 01-09
+        d = "0#{d}"
+      end
+      if year == Time.now.year && month == Time.now.month && d == Time.now.day && configurableValue(:Line_Calendar, :colordate) == "yes" then
+        configurableValue(:Line_Calendar, :hicolor) == "yes" ? date_array[d] = HI_COLOR : date_array[d] = ""
+        date_array[d.to_i] += Line_Calendar::COLORS[configurableValue(:Line_Calendar, :color)] + d.to_s + Line_Calendar::END_COLOR
+      else
+        date_array[d.to_i] = d
+      end
     end
     # remove 0 key for 1 to 1 mapping in array
     date_array.shift
     # make sure all dates are two digits
     date_array.each do |d|
-      if d < 10 then
-        # if date is 1-9 make sure it is 01-09
-        date_array[(d -1)] = "0#{d}"
-      end
     end
     return date_array
   end
